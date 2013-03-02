@@ -40,6 +40,7 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.link.option.scriptfile.1077223545" name="Script file (-T)" superClass="org.eclipse.cdt.cross.arm.gnu.c.link.option.scriptfile" value="/home/nemo/workspace/FreeRTOS/Script/stm32_flash.ld" valueType="string"/>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.link.option.libs.990937848" name="Libraries (-l)" superClass="org.eclipse.cdt.cross.arm.gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="Stm32_debug"/>
+									<listOptionValue builtIn="false" value="stdlib"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.link.option.paths.1205745083" name="Library search path (-L)" superClass="org.eclipse.cdt.cross.arm.gnu.c.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Lib}&quot;"/>
@@ -103,6 +104,7 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.link.option.gcsections.1776499790" name="Remove unused sections (-Xlinker --gc-sections)" superClass="org.eclipse.cdt.cross.arm.gnu.c.link.option.gcsections" value="true" valueType="boolean"/>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.link.option.libs.657204725" name="Libraries (-l)" superClass="org.eclipse.cdt.cross.arm.gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="Stm32"/>
+									<listOptionValue builtIn="false" value="stdlib"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.link.option.paths.1550105133" name="Library search path (-L)" superClass="org.eclipse.cdt.cross.arm.gnu.c.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Lib}&quot;"/>
