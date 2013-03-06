@@ -25,19 +25,11 @@ int main(void){
 	int i, j, k;
 	portBASE_TYPE code=pdPASS+1;
 
-
 	RCC_CFG();
 
-//	USART1_CFG();
-
-	GPIOC_CFG();
-
-	NVIC_CFG();
-
-	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 1);
-
 	code = pdFAIL;
-	xTaskCreate(&vMyTask, (signed char *)"My Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	code = xTaskCreate(&vMyTask, (signed char *)"My Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+
 	if(code == pdPASS){
 		for(i=0; i<10; i++){
 			GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
@@ -66,7 +58,9 @@ int main(void){
 
 int a;
 void vMyTask(void *pvParameters){
+	NVIC_CFG();
 	USART1_CFG();
+	GPIOC_CFG();
 	a=0;
 	for(;;){
 		if(a!=0){
@@ -85,7 +79,7 @@ void vApplicationIdleHook( void ){
 	}
 }
 */
-/*
+
 void USART_SendString(char *str){
 	int i;
 
@@ -95,7 +89,7 @@ void USART_SendString(char *str){
 	}
 
 }
-*/
+
 void RCC_CFG(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOC, ENABLE);
 }
@@ -157,7 +151,9 @@ void NVIC_CFG(void){
 void USART1_IRQHandler(void){
   if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET){
     symbol = USART_ReceiveData(USART1);
-	//GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-    a=1;
+	if(symbol == 0x0D){
+		GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
+	}
+    //a=1;
   }
 }
