@@ -12,68 +12,72 @@
 
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 
 void vMyTask(void *);
 void NVIC_CFG(void);
 void USART1_CFG(void);
 void GPIOC_CFG(void);
 void RCC_CFG(void);
+void USART1_SendString(char *);
 
+#define MAX_CMD_LEN		32
+#define MAX_CMD_QUEUE	2
 int bit = 0;
+
 char symbol;
+char cmd[MAX_CMD_QUEUE][MAX_CMD_LEN];
+int idx_rd_cmd=0;
+int idx_wr_cmd=0;
+int idx_cmd=0;
+
+xSemaphoreHandle Sem;
 int main(void){
 	int i, j, k;
-	portBASE_TYPE code=pdPASS+1;
-
+	idx_rd_cmd=0;
+	idx_wr_cmd=0;
+	idx_cmd=0;
 
 	RCC_CFG();
 
-//	USART1_CFG();
+	vSemaphoreCreateBinary(Sem);
+	xSemaphoreTake(Sem, portMAX_DELAY);
 
-	GPIOC_CFG();
-
-	NVIC_CFG();
+	xTaskCreate(vMyTask, (signed char *)"Init",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 1);
 
-	code = pdFAIL;
-	xTaskCreate(&vMyTask, (signed char *)"My Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-	if(code == pdPASS){
-		for(i=0; i<10; i++){
-			GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-
-			for(j=0; j<1000000; j++){
-				k++;
-			}
-		}
-	}
 
 	vTaskStartScheduler();
 
 	for(i=0; i<20; i++){
-		GPIO_WriteBit(GPIOC, GPIO_Pin_13, bit);
-		bit = 1 - bit;
-
-		for(j=0; j<100000; j++){
-			k++;
-		}
+		GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
+		for(j=0; j<300000; j++)k++;
 	}
 
 	for(;;);
 	return 0;
 }
 
-
-int a;
 void vMyTask(void *pvParameters){
+
+	NVIC_CFG();
+
 	USART1_CFG();
-	a=0;
+
+	GPIOC_CFG();
+
+	USART1_SendString("\r\nSTM32F10x monitor [ver 1.0]\r\n->");
+
 	for(;;){
-		if(a!=0){
-			GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-			a=0;
-			taskYIELD();
-		}
+		xSemaphoreTake(Sem, portMAX_DELAY);
+		USART1_SendString("\r\nCommand received: ");
+		USART1_SendString(&cmd[idx_rd_cmd][0]);
+		USART1_SendString("\r\n->");
+
+		idx_rd_cmd = (idx_rd_cmd+1)%MAX_CMD_QUEUE;
+
+		//GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
 	}
 }
 
@@ -85,17 +89,17 @@ void vApplicationIdleHook( void ){
 	}
 }
 */
-/*
-void USART_SendString(char *str){
+
+void USART1_SendString(char *str){
 	int i;
 
-	for(i=0; i<strlen(str); i++){
+	for(i=0; str[i]!=0; i++){
 		while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET);
 		USART_SendData(USART1, str[i]);
 	}
 
 }
-*/
+
 void RCC_CFG(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOC, ENABLE);
 }
@@ -153,11 +157,20 @@ void NVIC_CFG(void){
   NVIC_Init(&NVIC_InitStructure);
 }
 
-
 void USART1_IRQHandler(void){
   if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET){
     symbol = USART_ReceiveData(USART1);
-	//GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-    a=1;
+	if(symbol == 0x0D){
+		cmd[idx_wr_cmd][idx_cmd] = 0;
+		idx_cmd = 0;
+		idx_wr_cmd = (idx_wr_cmd+1)%MAX_CMD_QUEUE;
+		xSemaphoreGive(Sem);
+	}
+	else{
+		if(idx_cmd < MAX_CMD_LEN-1){
+			cmd[idx_wr_cmd][idx_cmd++] = symbol;
+			USART_SendData(USART1, symbol);
+		}
+	}
   }
 }
