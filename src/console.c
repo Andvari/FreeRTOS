@@ -8,12 +8,11 @@
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
 
-
 #include "FreeRTOS.h"
 #include "semphr.h"
 
-#include "defines.h"
-#include "globalvars.h"
+#include "./include/defines.h"
+#include "./include/globalvars.h"
 
 extern void USART1_CFG(void);
 extern void print(char *);

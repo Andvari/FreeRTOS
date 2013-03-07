@@ -14,11 +14,9 @@
 #include "queue.h"
 #include "semphr.h"
 
-#include "header.h"
-#include "defines.h"
-#include "globalvars.h"
-
-
+#include "./include/header.h"
+#include "./include/defines.h"
+#include "./include/globalvars.h"
 
 int main(void){
 	int i;

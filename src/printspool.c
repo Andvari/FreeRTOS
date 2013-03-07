@@ -12,8 +12,8 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 
-#include "defines.h"
-#include "globalvars.h"
+#include "./include/defines.h"
+#include "./include/globalvars.h"
 
 extern void USART1_SendString(char *);
 

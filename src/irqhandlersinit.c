@@ -8,7 +8,7 @@
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
 
-#include "globalvars.h"
+#include "./include/globalvars.h"
 
 void USART1_IRQHandler(void){
   char symbol;
