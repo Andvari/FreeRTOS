@@ -5,9 +5,7 @@
  *      Author: nemo
  */
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-
+#include "header.h"
 
 void RCC_CFG(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOC, ENABLE);
@@ -40,7 +38,7 @@ void USART1_CFG(void){
 	myGPIO.GPIO_Mode	=	GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &myGPIO);
 
-	myUSART.USART_BaudRate				=	38400;
+	myUSART.USART_BaudRate				=	115200;
 	myUSART.USART_WordLength			=	USART_WordLength_8b;
 	myUSART.USART_StopBits				=	USART_StopBits_1;
 	myUSART.USART_Parity				=	USART_Parity_No;

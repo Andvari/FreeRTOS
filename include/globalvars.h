@@ -26,9 +26,11 @@ int idx_rd_cmd_queue;
 int idx_wr_cmd_queue;
 int len_wr_cmd_queue;
 
+char vars[MAX_NUM_VARS];
 
 xSemaphoreHandle	sem[MAX_NUM_SEMAPHORES];
 xQueueHandle		queue_print_sync;
 
+portCHAR task_list[MAX_NUM_TASKS*MAX_TASK_RECORD_LEN];
 
 #endif /* GLOBALVARS_H_ */

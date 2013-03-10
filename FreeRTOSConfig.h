@@ -94,7 +94,7 @@
 #define configTICK_RATE_HZ			( ( portTickType ) 200 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 5 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 120 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 18 * 1024 ) )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 24 * 1024 ) )
 #define configMAX_TASK_NAME_LEN		( 16 )
 #define configUSE_TRACE_FACILITY	0
 #define configUSE_16_BIT_TICKS		0
@@ -133,6 +133,8 @@ NVIC value of 255. */
 #define xPortPendSVHandler PendSV_Handler
 #define vPortSVCHandler SVC_Handler
 #define xPortSysTickHandler SysTick_Handler
+
+#define FREERTOS_MEMORY_SCHEME	4
 
 
 #endif /* FREERTOS_CONFIG_H */

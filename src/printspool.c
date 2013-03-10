@@ -5,25 +5,18 @@
  *      Author: nemo
  */
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-
-
-#include "FreeRTOS.h"
-#include "semphr.h"
-
-#include "./include/defines.h"
-#include "./include/globalvars.h"
-
-extern void USART1_SendString(char *);
+#include "header.h"
 
 void vPrintTask(void *pvParameters){
+	int i;
 
 	for(;;){
 		xQueueReceive(queue_print_sync, NULL, portMAX_DELAY);
-		USART1_SendString(&print_queue[idx_rd_print_queue][0]);
+		for(i=0; print_queue[idx_rd_print_queue][i]!=0; i++){
+			while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET);
+			USART_SendData(USART1, print_queue[idx_rd_print_queue][i]);
+		}
 		idx_rd_print_queue = (idx_rd_print_queue+1)%MAX_PRINT_QUEUE_SIZE;
 	}
 
 }
-

@@ -5,21 +5,17 @@
  *      Author: nemo
  */
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-
-#include "FreeRTOS.h"
-#include "semphr.h"
-
-#include "./include/defines.h"
-#include "./include/globalvars.h"
-
-extern void USART1_CFG(void);
-extern void print(char *);
+#include "header.h"
 
 void vConsoleTask(void *pvParameters){
+	int i;
 
 	USART1_CFG();
+
+	for(i=0; i<12; i++){
+		print("\n\n\n\n\n\n\n\n");
+		vTaskDelay(1);
+	}
 
 	print("\r\nSTM32F10x monitor [ver 1.0]");
 
@@ -27,8 +23,16 @@ void vConsoleTask(void *pvParameters){
 		print("\r\n->");
 		xSemaphoreTake(sem[SEM_USART1_RXNE], portMAX_DELAY);
 
-		print("\r\n");
-		print(&cmd_queue[idx_rd_cmd_queue][0]);
+		if(strcmp(&cmd_queue[idx_rd_cmd_queue][0], "hs") == 0){
+			print("\r\nHeap size: %d", xPortGetFreeHeapSize());
+		}
+		else{
+			if(strlen(&cmd_queue[idx_rd_cmd_queue][0])){
+				print("\r\n");
+				print(&cmd_queue[idx_rd_cmd_queue][0]);
+			}
+		}
 		idx_rd_cmd_queue = (idx_rd_cmd_queue+1)%MAX_CMD_QUEUE_SIZE;
 	}
 }
+

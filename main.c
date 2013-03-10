@@ -5,18 +5,10 @@
  *      Author: nemo
  */
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
+#include "header.h"
 
-#include "FreeRTOS.h"
-
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"
-
-#include "./include/header.h"
-#include "./include/defines.h"
-#include "./include/globalvars.h"
+void vCounterTask1(void *);
+void vCounterTask2(void *);
 
 int main(void){
 	int i;
@@ -26,6 +18,10 @@ int main(void){
 	for(i=0 ;i<sizeof(sem); i++){
 		vSemaphoreCreateBinary(sem[i]);
 		xSemaphoreTake(sem[i], portMAX_DELAY);
+	}
+
+	for(i=0; i<MAX_NUM_VARS; i++){
+		vars[i] = 0;
 	}
 
 	queue_print_sync = xQueueCreate(MAX_PRINT_QUEUE_SIZE, 0);
@@ -41,6 +37,8 @@ int main(void){
 	xTaskCreate(vInitTask,		(signed char *)"Init",		configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vConsoleTask,	(signed char *)"Console",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vPrintTask,		(signed char *)"Print",		configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//xTaskCreate(vCounterTask1,	(signed char *)"Counter1",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//xTaskCreate(vCounterTask2,	(signed char *)"Counter2",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 	vTaskStartScheduler();
 
@@ -48,11 +46,18 @@ int main(void){
 	return (0);
 }
 
-void USART1_SendString(char *str){
-	int i;
-	for(i=0; str[i]!=0; i++){
-		while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET);
-		USART_SendData(USART1, str[i]);
+
+void vCounterTask1(void *pvParameters){
+	for(;;){
+		print("1\r\n");
+		vTaskDelay(100);
+	}
+
+}
+void vCounterTask2(void *pvParameters){
+	for(;;){
+		print("2\r\n");
+		vTaskDelay(200);
 	}
 
 }

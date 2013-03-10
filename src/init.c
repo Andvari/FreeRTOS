@@ -5,14 +5,7 @@
  *      Author: nemo
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-
-extern void NVIC_CFG(void);
-extern void GPIOC_CFG(void);
+#include "header.h"
 
 void vInitTask(void *pvParameters){
 

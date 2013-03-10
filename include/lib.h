@@ -8,14 +8,12 @@
 #ifndef LIB_H_
 #define LIB_H_
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-#include "globalvars.h"
+#include "header.h"
 
-void print(char *);
-int strlen(char *);
-int strcmp(char *, char *);
-int itoa(int, char *);
-int ftoa(float, char *);
+void print(char *, ...);
+
+char * itoa(int, char *, int);
+char * ftoa(float, char *);
+int atoi(char *);
 
 #endif /* LIB_H_ */

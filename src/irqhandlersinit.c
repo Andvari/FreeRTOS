@@ -5,10 +5,7 @@
  *      Author: nemo
  */
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-
-#include "./include/globalvars.h"
+#include "header.h"
 
 void USART1_IRQHandler(void){
   char symbol;
