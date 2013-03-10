@@ -5,68 +5,59 @@
  *      Author: nemo
  */
 
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
+#include "header.h"
 
-#include "FreeRTOS.h"
+void vCounterTask1(void *);
+void vCounterTask2(void *);
 
-#include "task.h"
-#include "queue.h"
-
-void vMyTask(void *);
-
-int bit = 0;
 int main(void){
-	int i, j, k;
-	portBASE_TYPE code=pdPASS+1;
-	GPIO_InitTypeDef myGPIO;
+	int i;
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	RCC_CFG();
 
-	GPIO_StructInit(&myGPIO);
-	myGPIO.GPIO_Speed	=	GPIO_Speed_50MHz;
-	myGPIO.GPIO_Pin		=	GPIO_Pin_13;
-	myGPIO.GPIO_Mode	=	GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOC, &myGPIO);
-
-	code = pdFAIL;
-	xTaskCreate(&vMyTask, (signed char *)"My Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-	if(code == pdPASS){
-		for(i=0; i<10; i++){
-			GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-
-			for(j=0; j<1000000; j++){
-				k++;
-			}
-		}
+	for(i=0 ;i<sizeof(sem); i++){
+		vSemaphoreCreateBinary(sem[i]);
+		xSemaphoreTake(sem[i], portMAX_DELAY);
 	}
+
+	for(i=0; i<MAX_NUM_VARS; i++){
+		vars[i] = 0;
+	}
+
+	queue_print_sync = xQueueCreate(MAX_PRINT_QUEUE_SIZE, 0);
+
+	xSemaphoreGive(sem[SEM_PRINT_QUEUE_SYNC]);
+	idx_rd_cmd_queue	=	0;
+	idx_wr_cmd_queue	=	0;
+	len_wr_cmd_queue	=	0;
+
+	idx_rd_print_queue	=	0;
+	idx_wr_print_queue	=	0;
+
+	xTaskCreate(vInitTask,		(signed char *)"Init",		configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vConsoleTask,	(signed char *)"Console",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vPrintTask,		(signed char *)"Print",		configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//xTaskCreate(vCounterTask1,	(signed char *)"Counter1",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//xTaskCreate(vCounterTask2,	(signed char *)"Counter2",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 	vTaskStartScheduler();
 
-	for(i=0; i<20; i++){
-		GPIO_WriteBit(GPIOC, GPIO_Pin_13, bit);
-		bit = 1 - bit;
-
-		for(j=0; j<100000; j++){
-			k++;
-		}
-	}
-
 	for(;;);
-	return 0;
+	return (0);
 }
 
 
-void vMyTask(void *pvParameters){
+void vCounterTask1(void *pvParameters){
 	for(;;){
-		GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-		vTaskDelay(200*3);
+		print("1\r\n");
+		vTaskDelay(100);
 	}
-}
 
-void vApplicationIdleHook( void ){
-	while(1){
-		GPIO_WriteBit(GPIOC, GPIO_Pin_13, ++bit%2);
-		vTaskDelay(portTICK_RATE_MS*1000);
+}
+void vCounterTask2(void *pvParameters){
+	for(;;){
+		print("2\r\n");
+		vTaskDelay(200);
 	}
+
 }
