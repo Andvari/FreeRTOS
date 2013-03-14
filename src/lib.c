@@ -74,6 +74,8 @@ void print(char *format, ...){
 	}
 
 	xSemaphoreGive(sem[SEM_PRINT_QUEUE_SYNC]);
+
+	vTaskDelay(1);
 }
 
 char *itoa(int val, char *dst, int radix){

@@ -39,18 +39,21 @@ void vConsoleTask(void *pvParameters){
 		idx_rd_cmd_queue = (idx_rd_cmd_queue+1)%MAX_CMD_QUEUE_SIZE;
 
 		if(strcmp(command, "hs") == 0){
-			print("\r\nHeap size: %d", xPortGetFreeHeapSize());
+			print("\r\nHeap size: %d [%x]", xPortGetFreeHeapSize(), xPortGetFreeHeapSize());
 			continue;
 		}
 
 		if(strcmp(command, "di") == 0){
 			address = NULL;
-			val = 0;
+			val = 256;
 
 			address	=	(char *)atoi(arg1);
 
-			if((val = atoi(arg2)) > 1024){
-				val = 1000;
+			if((val = atoi(arg2)) == 0){
+				val = 256;
+			}
+			else{
+				if((val = atoi(arg2)) > 1024) val = 1024;
 			}
 
 			dump(address, val);
