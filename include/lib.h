@@ -12,8 +12,13 @@
 
 void print(char *, ...);
 
-char * itoa(int, char *, int);
-char * ftoa(float, char *);
-int atoi(char *);
+char *	itoa(int, char *, int);
+char *	ftoa(float, char *);
+int		atoi(char *);
+char *	get_token(char *, char *, char);
+void	parse_string(char *, char *, char *, char *);
+void	dump_line(char *, char *);
+void	dump(char *, int);
+char	hex_symbol(char);
 
 #endif /* LIB_H_ */
