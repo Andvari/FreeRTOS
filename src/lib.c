@@ -74,6 +74,8 @@ void print(char *format, ...){
 	}
 
 	xSemaphoreGive(sem[SEM_PRINT_QUEUE_SYNC]);
+
+	vTaskDelay(1);
 }
 
 char *itoa(int val, char *dst, int radix){
@@ -140,14 +142,120 @@ char *ftoa(float val, char *dst){
 }
 
 int atoi(char *str){
-	int i;
-	int val;
+	int		i;
+	int		val;
+	char	ofst;
+	char	radix;
+
+	ofst	=	0;
+	radix	=	10;
+
+	if((str[0]=='0')&&((str[1]=='x')||(str[1]=='X'))){
+		ofst	=	2;
+		radix	=	16;
+	}
 
 	i=0;
 	val = 0;
-	while((str[i]>=48)&&(str[i]<=57)){
-		val = val*10 + str[i++] - 48;
+	if(radix == 10){
+		while((str[ofst+i] >= 48) && (str[ofst+i] <= 57)){
+			val = val*10 + str[ofst+i++] - 48;
+		}
+	}
+	else{
+		while(((str[ofst+i] >= 48) && (str[ofst+i] <= 57)) || ((str[ofst+i] >= 65) && (str[ofst+i] <= 70))){
+			if((str[ofst+i] >= 48) && (str[ofst+i] <= 57)){
+				val = val*16 + str[ofst+i++] - 48;
+			}
+			else{
+				val = val*16 + str[ofst+i++] - 65 + 10;
+			}
+		}
 	}
 
 	return (val);
+}
+
+void parse_string(char *str, char *command, char *arg1, char *arg2){
+	command[0] = 0;
+	arg1[0] = 0;
+	arg2[0] = 0;
+
+	if(str != NULL)str = get_token(str, command,	' ');
+	if(str != NULL)str = get_token(str, arg1,		' ');
+	if(str != NULL)str = get_token(str, arg2,		' ');
+}
+
+char *get_token(char *str, char *dst, char delimiter){
+	int i;
+
+	i=0;
+	do{
+		dst[i] = str[i];
+		if(str[i] == delimiter){
+			dst[i]=0;
+			if(str[i+1] == 0)	return (NULL);
+			else				return (&str[i+1]);
+		}
+	}while(str[i++]!=0);
+
+	return (NULL);
+}
+
+void dump_line(char *bytes, char *line){
+	int i, j, k, l;
+	char nibble;
+
+	k=0;
+
+	for(i=0; i<8; i++){
+		nibble = ((int)bytes>>(7-i)*4)&0xF;
+		line[k++] = hex_symbol(nibble);
+	}
+
+	line[k++] = ':';
+	line[k++] = ' ';
+
+	i=0;
+	for(j=0; j<2; j++){
+		for(l=0; l<8; l++){
+			line[k++] = hex_symbol(bytes[i  ]>>4);
+			line[k++] = hex_symbol(bytes[i++]   );
+			line[k++] = ' ';
+		}
+		line[k++] = ' ';
+	}
+
+	for(i=0; i<16; i++){
+		if((bytes[i] < 32)||(bytes[i] > 126))	line[k++] = '.';
+		else					line[k++] = bytes[i];
+	}
+
+	line[k++] = 0;
+
+}
+
+void dump(char *bytes, int size){
+	char line[80];
+	union{
+		char			*pchar;
+		unsigned int	integer;
+	}addr;
+
+	addr.pchar		=	bytes;
+	addr.integer	&=	0xFFFFFFF0;
+
+	while(size > 0){
+		dump_line(addr.pchar, line);
+		print("\r\n%s", line);
+
+		size -= 16;
+		addr.integer	+=	0x10;
+	}
+}
+
+char hex_symbol(char nibble){
+	nibble &= 0x0F;
+	if(nibble<=9)	return (nibble+48);
+	else			return (nibble-10+65);
 }

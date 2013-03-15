@@ -23,6 +23,7 @@
 
 #include "defines.h"
 #include "globalvars.h"
+#include "lib.h"
 
 void vInitTask(void *);
 void vConsoleTask(void *);
