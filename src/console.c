@@ -83,7 +83,6 @@ void vConsoleTask(void *pvParameters){
 		}
 
 		if(strcmp(command, "reset") == 0){
-			print("\r\nSTM32 resetting...");
 			NVIC_SystemReset();
 		}
 
