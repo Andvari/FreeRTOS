@@ -33,5 +33,6 @@ void NVIC_CFG(void);
 void USART1_CFG(void);
 void GPIOC_CFG(void);
 void RCC_CFG(void);
+void TIM6_CFG(void);
 
 #endif /* HEADER_H_ */

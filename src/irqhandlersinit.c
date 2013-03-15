@@ -27,3 +27,7 @@ void USART1_IRQHandler(void){
   }
 }
 
+void TIM2_IRQHandler(void){
+	xSemaphoreGiveFromISR(sem[SEM_TIM2_IT_Update], pdFALSE);
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+}

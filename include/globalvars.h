@@ -33,4 +33,6 @@ xQueueHandle		queue_print_sync;
 
 portCHAR task_list[MAX_NUM_TASKS*MAX_TASK_RECORD_LEN];
 
+int timer6_counter;
+
 #endif /* GLOBALVARS_H_ */

@@ -13,6 +13,8 @@ void vInitTask(void *pvParameters){
 
 	GPIOC_CFG();
 
+	TIM2_CFG();
+
 	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 1);
 
 	vTaskSuspend(NULL);

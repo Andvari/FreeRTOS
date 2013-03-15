@@ -21,6 +21,7 @@
 #define MAX_NUM_SEMAPHORES			5
 #define SEM_USART1_RXNE				0
 #define SEM_PRINT_QUEUE_SYNC		1
+#define	SEM_TIM2_IT_Update			2
 
 #define MAX_NUM_TASKS				10
 #define	MAX_TASK_RECORD_LEN			40
