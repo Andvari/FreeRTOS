@@ -8,6 +8,10 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
+#define SRAM_START_ADDRESS			0x20000000
+#define	SRAM_SIZE					0x8000
+
+
 #define MAX_CMD_QUEUE_RECORD_LEN	32
 #define MAX_CMD_QUEUE_SIZE			2
 

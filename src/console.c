@@ -68,18 +68,24 @@ void vConsoleTask(void *pvParameters){
 			address = (char *)atoi(arg1);
 			val = atoi(arg2)&0xFF;
 
-			address[0] = (char)val;
+			if(((int)address >= SRAM_START_ADDRESS) && ((int)address < SRAM_START_ADDRESS + SRAM_SIZE)){
+				address[0] = (char)val;
 
-			if(address[0] == (char)val){
-				print("\r\nOK");
-			}
-			else{
-				print("\r\nError");
+				if(address[0] == (char)val){
+					print("\r\nOK");
+				}
+				else{
+					print("\r\nError");
+				}
 			}
 
 			continue;
 		}
 
+		if(strcmp(command, "reset") == 0){
+			print("\r\nSTM32 resetting...");
+			NVIC_SystemReset();
+		}
 
 	}
 }
