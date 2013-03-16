@@ -84,8 +84,23 @@ char *itoa(int val, char *dst, int radix){
 	char a;
 
 	if(val == 0){
-		dst[0] = '0';
-		dst[1] = 0;
+		switch (radix){
+		case	16:	dst[0] = '0';
+					dst[1] = 'x';
+					dst[2] = '0';
+					dst[3] = '0';
+					dst[4] = '0';
+					dst[5] = '0';
+					dst[6] = '0';
+					dst[7] = '0';
+					dst[8] = '0';
+					dst[9] = '0';
+					dst[10]= 0;
+					break;
+		default:	dst[0] = '0';
+					dst[1] = 0;
+					break;
+		}
 	}
 	else{
 
