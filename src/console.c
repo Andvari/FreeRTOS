@@ -13,8 +13,10 @@ void vConsoleTask(void *pvParameters){
 	char arg1[16];
 	char arg2[16];
 	char *remain_str;
-	char *address;
-	unsigned int val;
+	char *address = NULL;
+	unsigned int val = 256;
+	char num_args;
+
 
 	USART1_CFG();
 
@@ -32,9 +34,9 @@ void vConsoleTask(void *pvParameters){
 		command[0]	=	0;
 		arg1[0]		=	0;
 		arg2[0]		=	0;
-		remain_str = get_token(&cmd_queue[idx_rd_cmd_queue][0],		command,	' ');
-		if(remain_str != NULL)remain_str = get_token(remain_str,	arg1,		' ');
-		if(remain_str != NULL)remain_str = get_token(remain_str,	arg2,		' ');
+		remain_str = get_token(&cmd_queue[idx_rd_cmd_queue][0],		command,	' ');num_args=0;
+		if(remain_str != NULL){remain_str = get_token(remain_str,	arg1,		' ');num_args=1;}
+		if(remain_str != NULL){remain_str = get_token(remain_str,	arg2,		' ');num_args=2;}
 
 		idx_rd_cmd_queue = (idx_rd_cmd_queue+1)%MAX_CMD_QUEUE_SIZE;
 
@@ -44,19 +46,20 @@ void vConsoleTask(void *pvParameters){
 		}
 
 		if(strcmp(command, "di") == 0){
-			address = NULL;
-			val = 256;
 
-			address	=	(char *)atoi(arg1);
-
-			if((val = atoi(arg2)) == 0){
-				val = 256;
+			if(num_args > 0){
+				address	=	(char *)atoi(arg1);
 			}
-			else{
+
+			if(num_args > 1){
 				if((val = atoi(arg2)) > 1024) val = 1024;
 			}
 
 			dump(address, val);
+
+			address	+=	val&0xFFFFFFF0;
+
+			if(val%0x10 != 0) address	+=	0x10;
 
 			continue;
 		}
