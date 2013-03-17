@@ -8,7 +8,8 @@
 #include "header.h"
 
 void RCC_CFG(void){
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOC, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
 }
 
 void GPIOC_CFG(void){
@@ -62,5 +63,23 @@ void NVIC_CFG(void){
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+}
+
+void I2C1_CFG(void){
+	I2C_InitTypeDef myI2C;
+
+	I2C_StructInit(&myI2C);
+
+	  myI2C.I2C_ClockSpeed			=	100000;
+	  myI2C.I2C_Mode				=	I2C_Mode_I2C;
+	  //myI2C.I2C_DutyCycle;
+	  myI2C.I2C_OwnAddress1			=	0x70;
+	  myI2C.I2C_Ack					=	I2C_Ack_Enable;
+	  myI2C.I2C_AcknowledgedAddress	=	I2C_AcknowledgedAddress_7bit;
+
+	I2C_Init(I2C1, &myI2C);
+
+	I2C_Cmd(I2C1, ENABLE);
+
 }
 
