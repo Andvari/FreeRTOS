@@ -178,12 +178,17 @@ int atoi(char *str){
 		}
 	}
 	else{
-		while(((str[ofst+i] >= 48) && (str[ofst+i] <= 57)) || ((str[ofst+i] >= 65) && (str[ofst+i] <= 70))){
+		while(((str[ofst+i] >= 48) && (str[ofst+i] <= 57)) || ((str[ofst+i] >= 65) && (str[ofst+i] <= 70)) || ((str[ofst+i] >= 97) && (str[ofst+i] <= 102))){
 			if((str[ofst+i] >= 48) && (str[ofst+i] <= 57)){
 				val = val*16 + str[ofst+i++] - 48;
 			}
 			else{
-				val = val*16 + str[ofst+i++] - 65 + 10;
+				if((str[ofst+i] >= 97) && (str[ofst+i] <= 102)){
+					val = val*16 + str[ofst+i++] - 97;
+				}
+				else{
+					val = val*16 + str[ofst+i++] - 65 + 10;
+				}
 			}
 		}
 	}
