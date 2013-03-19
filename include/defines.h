@@ -31,4 +31,6 @@
 #define MAX_NUM_ARGS				2
 #define MAX_ARG_LEN					16
 
+#define	BT_BOARD_38400
+
 #endif /* DEFINES_H_ */
