@@ -75,7 +75,12 @@ void print(char *format, ...){
 
 	xSemaphoreGive(sem[SEM_PRINT_QUEUE_SYNC]);
 
+#ifdef	BT_BOARD_38400
+	vTaskDelay(3);
+#else
 	vTaskDelay(1);
+#endif
+
 }
 
 char *itoa(int val, char *dst, int radix){
