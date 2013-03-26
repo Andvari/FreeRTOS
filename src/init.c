@@ -13,7 +13,7 @@ void vInitTask(void *pvParameters){
 
 	GPIOC_CFG();
 
-	//I2C1_CFG();
+	I2C2_CFG();
 
 	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 1);
 

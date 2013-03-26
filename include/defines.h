@@ -21,6 +21,8 @@
 #define MAX_NUM_SEMAPHORES			5
 #define SEM_USART1_RXNE				0
 #define SEM_PRINT_QUEUE_SYNC		1
+#define SEM_TO_MEAS					2
+#define	SEM_I2C2_SB					3
 
 #define MAX_NUM_TASKS				10
 #define	MAX_TASK_RECORD_LEN			40
@@ -30,5 +32,8 @@
 #define	MAX_COMMAND_LEN				8
 #define MAX_NUM_ARGS				2
 #define MAX_ARG_LEN					16
+
+#define	BMP085_I2C	I2C2
+
 
 #endif /* DEFINES_H_ */

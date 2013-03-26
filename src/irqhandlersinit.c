@@ -27,3 +27,29 @@ void USART1_IRQHandler(void){
   }
 }
 
+extern int sr1;
+extern int sr2;
+extern int i2c2_stage;
+extern int ev8_stage;
+extern unsigned char i2c2_addr;
+extern unsigned char msb;
+extern unsigned char lsb;
+extern int aaa;
+extern int bbb;
+extern int ccc;
+extern int ddd;
+extern int eee;
+extern int fff;
+
+#define	EV5		((I2C2->SR1&0x1) != 0)
+#define EV6		((I2C2->SR1&0x2) != 0)
+#define EV8		((I2C2->SR1&0x80) != 0)
+
+int arr_sr1[20];
+int arr_sr2[20];
+int ct_arr;
+
+void I2C2_EV_IRQHandler(void){
+	aaa++;
+}
+

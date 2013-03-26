@@ -59,27 +59,61 @@ void NVIC_CFG(void){
 
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 
+  NVIC_InitStructure.NVIC_IRQChannel = I2C2_EV_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
   NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+
 }
 
-void I2C1_CFG(void){
+void I2C2_CFG(void){
 	I2C_InitTypeDef myI2C;
+	GPIO_InitTypeDef myGPIO;
+
+	GPIO_StructInit(&myGPIO);
+
+	myGPIO.GPIO_Speed	=	GPIO_Speed_10MHz;
+	myGPIO.GPIO_Pin		=	GPIO_Pin_10;
+	myGPIO.GPIO_Mode	=	GPIO_Mode_AF_OD;
+	GPIO_Init(GPIOB, &myGPIO);
+	myGPIO.GPIO_Pin		=	GPIO_Pin_11;
+	myGPIO.GPIO_Mode	=	GPIO_Mode_AF_OD;
+	GPIO_Init(GPIOB, &myGPIO);
 
 	I2C_StructInit(&myI2C);
 
-	  myI2C.I2C_ClockSpeed			=	100000;
-	  myI2C.I2C_Mode				=	I2C_Mode_I2C;
-	  //myI2C.I2C_DutyCycle;
-	  myI2C.I2C_OwnAddress1			=	0x70;
-	  myI2C.I2C_Ack					=	I2C_Ack_Enable;
-	  myI2C.I2C_AcknowledgedAddress	=	I2C_AcknowledgedAddress_7bit;
+	myI2C.I2C_ClockSpeed			=	100000;
+	myI2C.I2C_Mode					=	I2C_Mode_I2C;
+	myI2C.I2C_DutyCycle				=	I2C_DutyCycle_2;
+	myI2C.I2C_OwnAddress1			=	0x0;
+	myI2C.I2C_Ack					=	I2C_Ack_Enable;
+	myI2C.I2C_AcknowledgedAddress	=	I2C_AcknowledgedAddress_7bit;
 
-	I2C_Init(I2C1, &myI2C);
+	I2C_Init(BMP085_I2C, &myI2C);
+	I2C_Cmd(BMP085_I2C, ENABLE);
 
-	I2C_Cmd(I2C1, ENABLE);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_TIMEOUT);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_OVR);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_AF);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_ARLO);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_BERR);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_STOPF);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_ADD10);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_BTF);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_ADDR);
+	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_SB);
 
+	//I2C_ITConfig(BMP085_I2C, I2C_IT_EVT, ENABLE);
+	I2C_ITConfig(BMP085_I2C, I2C_IT_BUF, ENABLE);
+
+	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 0);
+	vTaskDelay(2);
+	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 1);
 }
 
