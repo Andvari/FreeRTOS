@@ -279,3 +279,7 @@ char hex_symbol(char nibble){
 	if(nibble<=9)	return (nibble+48);
 	else			return (nibble-10+65);
 }
+
+int mks2tick(int mks){
+	return ((mks/1000) * configTICK_RATE_HZ/1000 + 1);
+}

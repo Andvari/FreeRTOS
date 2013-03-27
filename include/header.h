@@ -28,10 +28,13 @@
 void vInitTask(void *);
 void vConsoleTask(void *);
 void vPrintTask(void *);
+void vTempMeasTask(void *);
+void vPressMeasTask(void *);
 
 void NVIC_CFG(void);
 void USART1_CFG(void);
 void GPIOC_CFG(void);
 void RCC_CFG(void);
+void I2C1_CFG(void);
 
 #endif /* HEADER_H_ */

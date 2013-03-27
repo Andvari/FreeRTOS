@@ -5,10 +5,16 @@
  *      Author: nemo
  */
 
-#include "header.h"
 
-void vCounterTask1(void *);
-void vCounterTask2(void *);
+/*
+ * SATOR
+ * AREPO
+ * TENET
+ * OPERA
+ * ROTAS
+ */
+
+#include "header.h"
 
 int main(void){
 	int i;
@@ -37,8 +43,8 @@ int main(void){
 	xTaskCreate(vInitTask,		(signed char *)"Init",		configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vConsoleTask,	(signed char *)"Console",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vPrintTask,		(signed char *)"Print",		configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-	//xTaskCreate(vCounterTask1,	(signed char *)"Counter1",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-	//xTaskCreate(vCounterTask2,	(signed char *)"Counter2",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vTempMeasTask,	(signed char *)"Temperature", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vPressMeasTask,	(signed char *)"Pressure",	configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 	vTaskStartScheduler();
 
@@ -46,18 +52,3 @@ int main(void){
 	return (0);
 }
 
-
-void vCounterTask1(void *pvParameters){
-	for(;;){
-		print("1\r\n");
-		vTaskDelay(100);
-	}
-
-}
-void vCounterTask2(void *pvParameters){
-	for(;;){
-		print("2\r\n");
-		vTaskDelay(200);
-	}
-
-}

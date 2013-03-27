@@ -20,5 +20,6 @@ void	parse_string(char *, char *, char *, char *);
 void	dump_line(char *, char *);
 void	dump(char *, int);
 char	hex_symbol(char);
+int		mks2tick(int);
 
 #endif /* LIB_H_ */
