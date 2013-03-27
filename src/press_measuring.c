@@ -83,7 +83,7 @@ void vPressMeasTask(void *pvParameters){
 		X2 = (-7357 * P) / 65536;
 		P = P + (X1 + X2 + 3791) / 16;
 
-		print("\r\nP: %d", P*760/101325);
+		//print("\r\nP: %d", P*760/101325);
 		xSemaphoreGive(sem[SEM_TO_MEAS]);
 	}
 }

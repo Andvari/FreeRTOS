@@ -56,7 +56,7 @@ void vTempMeasTask(void *pvParameters){
 		B5 = X1 + X2;
 		T = (B5 + 8) / 16;
 
-		print("\r\nT: %d", T);
+		//print("\r\nT: %d", T);
 		xSemaphoreGive(sem[SEM_TO_MEAS]);
 	}
 }
