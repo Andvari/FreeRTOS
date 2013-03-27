@@ -28,6 +28,8 @@
 void vInitTask(void *);
 void vConsoleTask(void *);
 void vPrintTask(void *);
+void vTempMeasTask(void *);
+void vPressMeasTask(void *);
 
 void NVIC_CFG(void);
 void USART1_CFG(void);

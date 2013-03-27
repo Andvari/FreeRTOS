@@ -33,4 +33,19 @@ xQueueHandle		queue_print_sync;
 
 portCHAR task_list[MAX_NUM_TASKS*MAX_TASK_RECORD_LEN];
 
+/*
+ * BMP085 variables
+ */
+union{
+	signed short int	ssi;
+	unsigned short int	usi;
+	struct{
+		unsigned char 	LSB;
+		unsigned char	MSB;
+	}byte;
+}regs[NUM_REGS];
+
+signed long T;
+signed long P;
+
 #endif /* GLOBALVARS_H_ */

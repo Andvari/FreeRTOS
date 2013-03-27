@@ -73,6 +73,8 @@ void NVIC_CFG(void){
 }
 
 void I2C2_CFG(void){
+	int i;
+	int sr2;
 	I2C_InitTypeDef myI2C;
 	GPIO_InitTypeDef myGPIO;
 
@@ -109,11 +111,36 @@ void I2C2_CFG(void){
 	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_ADDR);
 	I2C_ClearITPendingBit(BMP085_I2C,I2C_IT_SB);
 
-	//I2C_ITConfig(BMP085_I2C, I2C_IT_EVT, ENABLE);
 	I2C_ITConfig(BMP085_I2C, I2C_IT_BUF, ENABLE);
 
 	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 0);
-	vTaskDelay(2);
 	GPIO_WriteBit(GPIOC, GPIO_Pin_13, 1);
+	vTaskDelay(1);
+
+	for(i=0; i<BASE_NUM_REGS; i++){
+		I2C2->CR1 |= 0x100;
+		while((I2C2->SR1&0x1) == 0);				// SB
+		I2C2->DR = 0xEE;
+		while((I2C2->SR1&0x2) == 0);				// ADDR
+		sr2 = I2C2->SR2;
+		while((I2C2->SR1&0x80) == 0);				// TXE
+		I2C2->DR = BMP085_CONFIG_REGS_ADDR + i*2;
+		while((I2C2->SR1&0x4) == 0);				// BTF
+		I2C2->CR1 |= 0x100;
+		while((I2C2->SR1&0x1) == 0);				// SB
+		I2C2->CR1 |= 0x400;							//ACK
+		I2C2->DR = 0xEF;
+		while((I2C2->SR1&0x2) == 0);				// ADDR
+		sr2 = I2C2->SR2;
+		while((I2C2->SR1&0x40) == 0);				// RXNE
+		regs[i].byte.MSB = I2C2->DR;
+		while((I2C2->SR1&0x40) == 0);				// RXNE
+		I2C2->CR1 &= 0xFFFFFBFF;					// NACK
+		I2C2->CR1 |= 0x200;
+		regs[i].byte.LSB = I2C2->DR;
+	}
+
+	xSemaphoreGive(sem[SEM_TO_MEAS]);
+
 }
 
